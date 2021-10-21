@@ -18,16 +18,20 @@ Public Class frmDiabetesCalculator
     Dim objPerson As New Person()
 
     Private Sub btnSave_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnSave.Click
-
+        Dim blnIsCarbs As Boolean
+        Dim blnIsCurrentBloodSugar As Boolean
+        Dim blnIsInsulinToCarbRatio As Boolean
         'Validate all data in textboxes
         If txtName.Text <> String.Empty Then
-            If txtCarbs.Text <> String.Empty Then
-                If txtCurrentBloodSugar.Text <> String.Empty Then
-                    If txtInsulinToCarbRatio.Text <> String.Empty Then
+            If blnIsCarbs = Double.TryParse(txtCarbs.Text, objPerson.Carbohydrates) Then
+                If blnIsCurrentBloodSugar = Double.TryParse(txtCurrentBloodSugar.Text, objPerson.CurrentBloodSugar) Then
+                    If blnIsInsulinToCarbRatio = Double.TryParse(txtInsulinToCarbRatio.Text, objPerson.InsulinToCarbRatio) Then
                         If txtMeal.Text <> String.Empty Then
 
 
-
+                            'blnIsCarbs = Double.TryParse(txtCarbs.Text, objPerson.Carbohydrates)
+                            ' blnIsCurrentBloodSugar = Double.TryParse(txtCurrentBloodSugar.Text, objPerson.CurrentBloodSugar)
+                            'blnIsInsulinToCarbRatio = Double.TryParse(txtInsulinToCarbRatio.Text, objPerson.InsulinToCarbRatio)
 
                             'Assign Person Properties
                             'objPerson.PersonID = CType(lblPersonIDOutput.Text, Integer)
@@ -36,6 +40,7 @@ Public Class frmDiabetesCalculator
                             objPerson.CurrentBloodSugar = CType(txtCurrentBloodSugar.Text, Double)
                             objPerson.InsulinToCarbRatio = CType(txtInsulinToCarbRatio.Text, Double)
                             objPerson.Meal = txtMeal.Text
+                            objPerson.InsulinUnitsToGive = lblInsulinOutput.Text
                             objPerson.DoseDateGiven = CType(txtDate.Text, DateTime)
 
 
@@ -49,6 +54,7 @@ Public Class frmDiabetesCalculator
                             lblMealDisplayOutput.Text = objPerson.Meal
                             lblDateOutput.Text = objPerson.DoseDateGiven.ToString
                             lblInsulinOutput.Text = CalculateInsulin().ToString
+                            lblFormulaOutput.Text = FormulaCreate().ToString
 
                             If btnSave.Text = "Save" Then
                                 'Add new Person object to list of Persons
@@ -67,16 +73,16 @@ Public Class frmDiabetesCalculator
                             txtMeal.Focus()
                         End If
                     Else
-                        Call Msg("Insulin to Carbs Ratio can not be blank.")
-                        txtInsulinToCarbRatio.Focus()
+                        Call Msg("Current Blood Sugar can not be blank, must be numeric and formatted 'XX' or 'XX.XX")
+                        txtCurrentBloodSugar.Focus()
                     End If
                 Else
-                    Call Msg("Current Blood Sugar can not be blank.")
-                    txtCurrentBloodSugar.Focus()
+                    Call Msg("Carbohydrates can not be blank, must be numeric and formatted 'XX' or 'XX.XX")
+                    txtCarbs.Focus()
                 End If
             Else
-                Call Msg("Carbohydrates can not be blank.")
-                txtCarbs.Focus()
+                Call Msg("Insulin To Carb Ratio or Current Blood Sugar can not be blank, must be numeric and formatted 'XX' or 'XX.XX")
+                txtInsulinToCarbRatio.Focus()
             End If
         Else
             Call Msg("Name can not be blank.")
@@ -85,7 +91,11 @@ Public Class frmDiabetesCalculator
 
     End Sub
 
-
+    Public Function FormulaCreate() As String
+        Dim Formula As String
+        Formula = lblCarbohydratesOutput.Text + " / " + lblInsulinToCarbRatioOutput.Text
+        Return Formula
+    End Function
 
     Public Function CalculateInsulin() As Double
         Dim InsulinUnitsToGive As Double
@@ -154,7 +164,8 @@ Public Class frmDiabetesCalculator
             lblInsulinToCarbRatioOutput.Text = objSelectedPerson.InsulinToCarbRatio.ToString
             lblMealDisplayOutput.Text = objSelectedPerson.Meal
             lblDateOutput.Text = objSelectedPerson.DoseDateGiven.ToString
-            'lblInsulinOutput.Text = CalculateInsulin().ToString
+            lblInsulinOutput.Text = objSelectedPerson.InsulinUnitsToGive.ToString
+            lblFormulaOutput.Text = FormulaCreate().ToString
 
             'Determine if this is an edit or delete
             Dim intResult As Integer = MessageBox.Show("Are you deleting this record?", "Person List", MessageBoxButtons.YesNo)
@@ -175,11 +186,11 @@ Public Class frmDiabetesCalculator
         Dim strPath As String = Application.StartupPath
         Dim intPathLength As Integer = strPath.Length
         'This strips off the bin/debug folder to point into your project folder.
-        strPath = strPath.Substring(0, intPathLength - 9)
+        strPath = strPath.Substring(0, intPathLength - 25)
 
 
 
-        Dim strconnection As String = "Server=(LocalDB)\MSSQLLocalDB;Integrated Security=true;AttachDbFileName=C:\Users\bemen\Desktop\.Net Application Development\DiabetesCalculatorFinal\DiabetesCalculatorFinal\DiabetesInformation.mdf"
+        Dim strconnection As String = "Server=(LocalDB)\MSSQLLocalDB;Integrated Security=true;AttachDbFileName=" + strPath + "DiabetesInformation.mdf"
 
         'Create a Connection object
         Dim dbConnection As New SqlConnection(strconnection)

@@ -12,7 +12,7 @@ Public Class Person
     Private dblCurrentBloodSugar As Double
     Private dblInsulinToCarbRatio As Double
     Private strMeal As String
-    Private dblInsulinUnitsToGive As Double
+    Private strInsulinUnitsToGive As String
     Private strFormulaOutput As String
     Private dteDoseDateGiven As DateTime
 
@@ -72,12 +72,12 @@ Public Class Person
         End Set
     End Property
 
-    Public Property InsulinUnitsToGive As Double
+    Public Property InsulinUnitsToGive As String
         Get
-            Return dblInsulinUnitsToGive
+            Return strInsulinUnitsToGive
         End Get
-        Set(ByVal dblValue As Double)
-            dblInsulinUnitsToGive = dblValue
+        Set(ByVal strValue As String)
+            strInsulinUnitsToGive = strValue
         End Set
     End Property
 
@@ -107,7 +107,7 @@ Public Class Person
         dblCurrentBloodSugar = 0
         dblInsulinToCarbRatio = 0
         strMeal = String.Empty
-        dblInsulinUnitsToGive = 0
+        strInsulinUnitsToGive = String.Empty
         strFormulaOutput = String.Empty
         dteDoseDateGiven = Date.Now
 
@@ -123,15 +123,14 @@ Public Class Person
         dblCurrentBloodSugar = 0
         dblInsulinToCarbRatio = 0
         strMeal = String.Empty
-        dblInsulinUnitsToGive = 0
+        strInsulinUnitsToGive = String.Empty
         strFormulaOutput = String.Empty
         dteDoseDateGiven = Date.Now
     End Sub
 
-    'Method
-    Public Sub CalculateInsulin(ByVal dblCarbohydrates As Double, ByVal dblInsulinToCarbRatio As Double)
-        dblInsulinUnitsToGive = dblCarbohydrates / dblInsulinToCarbRatio
-    End Sub
+
+
+
 
 
 
